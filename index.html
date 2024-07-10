@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Coinflip</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.2/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;500;700&display=swap"
+    />
+    <style>
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+        font-family: "Space Mono", monospace;
+        background-color: black;
+        color: white;
+        user-select: none;
+        font-weight: 500;
+        font-size: 2rem;
+      }
+      .data {
+        font-size: 0.7rem;
+      }
+    </style>
+  </head>
+  <body
+    class="flex flex-col justify-center items-center"
+    onclick="flip();showData()"
+  >
+    <h1 class="result"></h1>
+    <p class="meanmedianmodedata text-sm text-gray-400"></p>
+    <div
+      class="text-gray-600 data text-wrap w-screen px-5 text-center overflow-hidden"
+    ></div>
+  </body>
+  <script>
+    let data = [];
+    let sortedData = [];
+    let n = 0;
+    // get number of flips from the URL
+
+    function flip() {
+      n = Math.round(Math.random());
+      data.push(n);
+    }
+    showData = () => {
+      document.querySelector(".result").innerHTML = n ? "Heads" : "Tails";
+      document.querySelector(".data").innerHTML = data
+        .map((v, i) => (i % 20 === 0 ? "\n" : "") + (v ? "H" : "T"))
+        .join("");
+      sortedData = [...data].sort();
+      let mean = data.reduce((a, b) => a + b, 0) / data.length;
+      let median = sortedData[Math.floor(data.length / 2)];
+      let mode = sortedData.reduce(
+        (a, b, i, arr) =>
+          arr.filter((v) => v === a).length >= arr.filter((v) => v === b).length
+            ? a
+            : b,
+        null
+      );
+
+      document.querySelector(
+        ".meanmedianmodedata"
+      ).innerHTML = `Mean: ${mean.toFixed(2)}, Median: ${
+        median ? "Heads" : "Tails"
+      }, Mode: ${mode ? "Heads" : "Tails"}`;
+    };
+    let numFlips = 0;
+    setNumFlips = (n) => {
+      for (let i = 0; i < n; i++) {
+        flip();
+      }
+      showData();
+    };
+
+    flip();
+    showData();
+  </script>
+</html>
